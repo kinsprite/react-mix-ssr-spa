@@ -1,0 +1,24 @@
+/* eslint-disable */
+"use strict";
+
+(function(callback) {
+  var data = {
+    apps: [
+      {
+        id: 'app-home',
+        dependencies: [],
+        entries: [
+          // REMOVE the current app's entries in development
+          // '/rmf-app-home/658c5f91/app-home-a200b003.css',
+          // '/rmf-app-home/658c5f91/app-home-b889c22.js'
+        ],
+        renders: [{renderId: 'root', routePath: '/home', componentKey: 'default'}],
+      },
+    ],
+    extra: {
+      defaultRoute: '/home',
+    },
+  };
+
+  if (callback) callback(data);
+})(rmfMetadataCallback);
