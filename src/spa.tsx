@@ -2,13 +2,32 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import Counter from './Counter';
 
-function DynamicView() {
+function DynamicView1() {
   return (
     <>
-      <hr />
       <Counter />
     </>
   );
 }
 
-ReactDOM.render(DynamicView(), document.getElementById('spa-dynamic-view'));
+function DynamicView2() {
+  return (
+    <>
+      <p>Dynamic View 2</p>
+    </>
+  );
+}
+
+const componentsMap = {
+  spaDynamicView1: DynamicView1,
+  spaDynamicView2: DynamicView2,
+};
+
+// render
+document.querySelectorAll('div[data-spa-render]').forEach((e) => {
+  const key = (e as HTMLElement).dataset.spaRender;
+
+  if (key && componentsMap[key]) {
+    ReactDOM.render(componentsMap[key](), e);
+  }
+});

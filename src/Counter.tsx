@@ -17,14 +17,14 @@ function Counter(): JSX.Element {
         className={styles.btn}
         onClick={() => setCount(count - 1)}
       >
-        DECREMENT
+        -1
       </button>
       <button
         type="button"
         className={styles.btn}
         onClick={() => setCount(count + 1)}
       >
-        INCREMENT
+        +1
       </button>
     </div>
   );

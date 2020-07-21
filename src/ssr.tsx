@@ -1,29 +1,19 @@
-import fs from 'fs';
-import http from 'http';
-import path from 'path';
 import ReactDOMServer from 'react-dom/server';
+import http from 'http';
 
 import RouterBase from './RouterBase';
 
-function readIndexHtml() : string {
-  const indexFile = path.resolve('./dist/index.html');
-  const result = fs.readFileSync(indexFile, 'utf8');
-
-  if (result) {
-    return result;
-  }
-
-  return `<!DOCTYPE html>
- <html lang="en">
- <head></head>
- <body>
- <div id="root"></div>
- </body>
- </html>`;
-}
+import './root.css';
 
 interface ManifestJson {
   files: {[key:string]: string};
+}
+
+interface SSRParam {
+  context : {url?: string};
+  req: http.IncomingMessage;
+  indexHtml: string;
+   manifestJson: ManifestJson;
 }
 
 function getLinks(manifestJson: ManifestJson) : string {
@@ -38,6 +28,10 @@ function getLinks(manifestJson: ManifestJson) : string {
     links += `<link rel="stylesheet" type="text/css" href="${files['spa.css']}">`;
   }
 
+  if (files['spa.js']) {
+    links += `<link rel="preload" as="script" href="${files['spa.js']}">`;
+  }
+
   return links;
 }
 
@@ -46,35 +40,24 @@ function getScripts(manifestJson: ManifestJson) : string {
   const { files } = manifestJson;
 
   if (files['spa.js']) {
-    scripts += `<script charset="utf-8" src="${files['spa.js']}"></script>`;
+    scripts += `<script src="${files['spa.js']}"></script>`;
   }
 
   return scripts;
 }
 
-function runSSR(manifestJson: ManifestJson) : void {
-  const indexHtml = readIndexHtml();
+function runSSR({
+  context, req, indexHtml, manifestJson,
+} : SSRParam) : string {
+  const html = ReactDOMServer.renderToString(RouterBase(req, context));
 
-  http.createServer((req, res) => {
-    // This context object contains the results of the render
-    const context : {url?: string} = {};
+  if (context.url) {
+    return html;
+  }
 
-    const html = ReactDOMServer.renderToString(RouterBase(req, context));
-
-    // context.url will contain the URL to redirect to if a <Redirect> was used
-    if (context.url) {
-      res.writeHead(302, {
-        Location: context.url,
-      });
-      res.end();
-    } else {
-      res.write(indexHtml.replace('</head>', `${getLinks(manifestJson)}</head>`)
-        .replace('</body>', `${getScripts(manifestJson)}</body>`)
-        .replace('<div id="root"></div>', `<div id="root">${html}</div>`));
-      res.end();
-    }
-  })
-    .listen(3000);
+  return indexHtml.replace('</head>', `${getLinks(manifestJson)}</head>`)
+    .replace('</body>', `${getScripts(manifestJson)}</body>`)
+    .replace('<div id="root"></div>', `<div id="root">${html}</div>`);
 }
 
 export default runSSR;

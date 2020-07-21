@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-  Link,
+  NavLink,
 } from 'react-router-dom';
 
 import LoginAsTester from './LoginAsTester';
@@ -19,19 +19,13 @@ function HomeApp(): JSX.Element {
         </p>
         <ul>
           <li>
-            <Link to="/home" className={styles.AppLink}>Home</Link>
+            <NavLink to="/home" className={styles.AppLink}>Home</NavLink>
           </li>
           <li>
-            <Link to="/app-example" className={styles.AppLink}>App Example</Link>
-          </li>
-          <li>
-            <Link to="/app-example/sub" className={styles.AppLink}>{'App Example\'s Sub'}</Link>
-          </li>
-          <li>
-            <Link to="/sub-at-root" className={styles.AppLink}>Sub at Root</Link>
+            <NavLink to="/app-example" className={styles.AppLink}>App Example</NavLink>
           </li>
         </ul>
-        <div id="spa-dynamic-view" />
+        <div data-spa-render="spaDynamicView2" />
       </header>
       <footer className={styles.AppFooter}>
         <a
