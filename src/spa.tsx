@@ -24,10 +24,11 @@ const componentsMap = {
 };
 
 // render
-document.querySelectorAll('div[data-spa-render]').forEach((e) => {
-  const key = (e as HTMLElement).dataset.spaRender;
+document.querySelectorAll<HTMLElement>('div[data-spa-render]').forEach((e) => {
+  const key = e.dataset.spaRender;
 
-  if (key && componentsMap[key]) {
+  if (key && componentsMap[key] && !e.dataset.spaRendered) {
     ReactDOM.render(componentsMap[key](), e);
+    e.dataset.spaRendered = 'true';
   }
 });

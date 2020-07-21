@@ -4,7 +4,6 @@ const http = require('http');
 const path = require('path');
 
 const connect = require('connect');
-const finalhandler = require('finalhandler');
 const serveStatic = require('serve-static');
 
 const manifestJson = require(path.resolve('./dist/rmf-manifest.json'));
@@ -56,11 +55,6 @@ app.use(serveStatic('public', { index: false }));
 
 // respond to all requests
 app.use(renderHtml);
-
-app.use((req, res) => {
-  const done = finalhandler(req, res);
-  done();
-});
 
 // create node.js http server and listen on port
 console.log('Listen on: http://127.0.0.1:3000');
