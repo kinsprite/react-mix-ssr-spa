@@ -2,8 +2,9 @@ const scripts = require('react-micro-frontend-scripts');
 
 function build() {
   // --- ENV for 'production' only ---
-  process.env.PUBLIC_DISABLE_REVISION = 'true';
-  process.env.PUBLIC_ROOT_URL = '/';
+  // process.env.PUBLIC_DISABLE_REVISION = 'true';
+  // process.env.PUBLIC_ROOT_URL = '/';
+  process.env.PUBLIC_URL = '/';
   // process.env.GENERATE_SOURCEMAP = 'true';
   // process.env.INLINE_RUNTIME_CHUNK = 'true';
   // process.env.MINIMIZE_IN_PRODUCTION = 'true';
@@ -17,7 +18,11 @@ function build() {
 
   scripts.runWebpack(scripts.envProduction, (config) => ({
     ...config,
-    // externals: scripts.helper.getExternalsOptions(),
+    externals: {
+      fs: 'fs',
+      http: 'http',
+      path: 'path',
+    },
     entry: {
       ssr: scripts.resolvePath('src/ssr'),
       spa: scripts.resolvePath('src/spa'),

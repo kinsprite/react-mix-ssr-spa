@@ -1,8 +1,10 @@
 /* eslint-disable */
 'use strict';
 
-if (process.env.NODE_ENV === 'production') {
-  module.exports = require('./cjs/production.min.js');
-} else {
-  module.exports = require('./cjs/development.js');
-}
+const path = require('path')
+
+const manifestJson = require(path.resolve('./dist/rmf-manifest.json'));
+
+const runSSR = require(path.resolve(path.resolve(path.join('./dist', manifestJson.files['ssr.js']))));
+
+runSSR.default(manifestJson);
