@@ -1,7 +1,7 @@
 import ReactDOMServer from 'react-dom/server';
 import http from 'http';
 
-import RouterBase from './RouterBase';
+import RouterBase, { getMetaObj } from './RouterBase';
 
 import './root.css';
 
@@ -14,6 +14,22 @@ interface SSRParam {
   req: http.IncomingMessage;
   indexHtml: string;
    manifestJson: ManifestJson;
+}
+
+function getMetaAndTitle(url: string): string {
+  const meta = getMetaObj(url);
+
+  if (!meta) {
+    return '';
+  }
+
+  let res = '';
+
+  res += `<meta name="description" content="${meta.description}" />`;
+  res += `<meta name="keywords" content="${meta.keywords}" />`;
+  res += `<title>${meta.title}</title>`;
+
+  return res;
 }
 
 function getLinks(manifestJson: ManifestJson) : string {
@@ -55,7 +71,8 @@ function runSSR({
     return html;
   }
 
-  return indexHtml.replace('</head>', `${getLinks(manifestJson)}</head>`)
+  return indexHtml.replace(/<title>.+<\/title>/, '')
+    .replace('</head>', `${getMetaAndTitle(req.url)}${getLinks(manifestJson)}</head>`)
     .replace('</body>', `${getScripts(manifestJson)}</body>`)
     .replace('<div id="root"></div>', `<div id="root">${html}</div>`);
 }

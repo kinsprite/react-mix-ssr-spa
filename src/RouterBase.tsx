@@ -30,4 +30,31 @@ function RouterBase(req: http.IncomingMessage, context : { url?: string}) : JSX.
   );
 }
 
+interface MetaObj {
+  description: string;
+  keywords: string;
+  title: string;
+}
+
+const metaMap: {[url: string]: MetaObj} = {
+  '/home': {
+    description: 'Home description',
+    keywords: 'Home',
+    title: 'Home',
+  },
+  '/app-example': {
+    description: 'App example description',
+    keywords: 'App, Example',
+    title: 'App Example',
+  },
+};
+
+function getMetaObj(url: string) : MetaObj {
+  return metaMap[url];
+}
+
 export default RouterBase;
+
+export {
+  getMetaObj,
+};
