@@ -1,8 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styles from './Counter.module.scss';
 
 function Counter(): JSX.Element {
   const [count, setCount] = useState(0);
+  const [once] = useState(0);
+
+  useEffect(() => {
+    setCount(1);
+    const timerId = setTimeout(() => setCount(2), 100);
+    return () => clearTimeout(timerId);
+  }, [once]);
 
   return (
     <div className={styles.row}>
